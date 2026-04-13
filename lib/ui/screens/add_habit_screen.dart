@@ -22,6 +22,19 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
   ];
   late int _selectedColor = _availableColors[0];
 
+  final List<String> _availableIcons = [
+    'lib/assets/icons/alcohol.png',
+    'lib/assets/icons/gambling.png',
+    'lib/assets/icons/gaming.png',
+    'lib/assets/icons/social-media.png',
+    'lib/assets/icons/pornography.png',
+    'lib/assets/icons/masturbation.png',
+    'lib/assets/icons/marijuana.png',
+    'lib/assets/icons/drug.png',
+  ];
+
+  late String _selectedIcon = _availableIcons[0];
+
   @override
   void dispose() {
     _titleController.dispose();
@@ -83,6 +96,24 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
             ],
           ),
           SizedBox(height: 20),
+          const Text('Vibrat iconku', style: TextStyle(fontSize: 18)),
+          const SizedBox(height: 15),
+          GestureDetector(
+            onTap: showIconPicker,
+            child: Container(
+              width: 70,
+              height: 70,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(15),
+                child: Image.asset(_selectedIcon),
+              ),
+            ),
+          ),
+          SizedBox(height: 15),
           const Text('Kogda ti brosil?', style: TextStyle(fontSize: 18)),
           SizedBox(height: 20),
           InkWell(
@@ -153,6 +184,57 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
     }
   }
 
+  void showIconPicker() {
+    showModalBottomSheet(
+      context: context,
+
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Vibrat iconku',
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+              const SizedBox(height: 20),
+              Wrap(
+                spacing: 20,
+                runSpacing: 20,
+                children: [
+                  ..._availableIcons.map((iconPath) {
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedIcon = iconPath;
+                        });
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: _selectedIcon == iconPath
+                              ? Colors.blueAccent
+                              : Colors.grey,
+                          borderRadius: BorderRadius.all(Radius.circular(16)),
+                        ),
+                        child: Image.asset(iconPath, width: 40, height: 40),
+                      ),
+                    );
+                  }),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   void _saveHabit() async {
     final textTitle = _titleController.text.trim();
     final newHabit = HabitModel(
@@ -160,6 +242,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
       userId: DateTime.now().millisecondsSinceEpoch.toString(),
       color: _selectedColor,
       startDate: _selectedDate,
+      icon: _selectedIcon,
     );
 
     if (textTitle.isEmpty) {
