@@ -22,18 +22,23 @@ const HabitModelSchema = CollectionSchema(
       name: r'color',
       type: IsarType.long,
     ),
-    r'startDate': PropertySchema(
+    r'icon': PropertySchema(
       id: 1,
+      name: r'icon',
+      type: IsarType.string,
+    ),
+    r'startDate': PropertySchema(
+      id: 2,
       name: r'startDate',
       type: IsarType.dateTime,
     ),
     r'title': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'title',
       type: IsarType.string,
     ),
     r'userId': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'userId',
       type: IsarType.string,
     )
@@ -58,6 +63,7 @@ int _habitModelEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 + object.icon.length * 3;
   bytesCount += 3 + object.title.length * 3;
   bytesCount += 3 + object.userId.length * 3;
   return bytesCount;
@@ -70,9 +76,10 @@ void _habitModelSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeLong(offsets[0], object.color);
-  writer.writeDateTime(offsets[1], object.startDate);
-  writer.writeString(offsets[2], object.title);
-  writer.writeString(offsets[3], object.userId);
+  writer.writeString(offsets[1], object.icon);
+  writer.writeDateTime(offsets[2], object.startDate);
+  writer.writeString(offsets[3], object.title);
+  writer.writeString(offsets[4], object.userId);
 }
 
 HabitModel _habitModelDeserialize(
@@ -83,9 +90,10 @@ HabitModel _habitModelDeserialize(
 ) {
   final object = HabitModel(
     color: reader.readLong(offsets[0]),
-    startDate: reader.readDateTime(offsets[1]),
-    title: reader.readString(offsets[2]),
-    userId: reader.readString(offsets[3]),
+    icon: reader.readString(offsets[1]),
+    startDate: reader.readDateTime(offsets[2]),
+    title: reader.readString(offsets[3]),
+    userId: reader.readString(offsets[4]),
   );
   object.id = id;
   return object;
@@ -101,10 +109,12 @@ P _habitModelDeserializeProp<P>(
     case 0:
       return (reader.readLong(offset)) as P;
     case 1:
-      return (reader.readDateTime(offset)) as P;
-    case 2:
       return (reader.readString(offset)) as P;
+    case 2:
+      return (reader.readDateTime(offset)) as P;
     case 3:
+      return (reader.readString(offset)) as P;
+    case 4:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -251,6 +261,136 @@ extension HabitModelQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition> iconEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'icon',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition> iconGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'icon',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition> iconLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'icon',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition> iconBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'icon',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition> iconStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'icon',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition> iconEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'icon',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition> iconContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'icon',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition> iconMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'icon',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition> iconIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'icon',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition> iconIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'icon',
+        value: '',
       ));
     });
   }
@@ -645,6 +785,18 @@ extension HabitModelQuerySortBy
     });
   }
 
+  QueryBuilder<HabitModel, HabitModel, QAfterSortBy> sortByIcon() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'icon', Sort.asc);
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterSortBy> sortByIconDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'icon', Sort.desc);
+    });
+  }
+
   QueryBuilder<HabitModel, HabitModel, QAfterSortBy> sortByStartDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'startDate', Sort.asc);
@@ -693,6 +845,18 @@ extension HabitModelQuerySortThenBy
   QueryBuilder<HabitModel, HabitModel, QAfterSortBy> thenByColorDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'color', Sort.desc);
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterSortBy> thenByIcon() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'icon', Sort.asc);
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterSortBy> thenByIconDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'icon', Sort.desc);
     });
   }
 
@@ -753,6 +917,13 @@ extension HabitModelQueryWhereDistinct
     });
   }
 
+  QueryBuilder<HabitModel, HabitModel, QDistinct> distinctByIcon(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'icon', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<HabitModel, HabitModel, QDistinct> distinctByStartDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'startDate');
@@ -785,6 +956,12 @@ extension HabitModelQueryProperty
   QueryBuilder<HabitModel, int, QQueryOperations> colorProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'color');
+    });
+  }
+
+  QueryBuilder<HabitModel, String, QQueryOperations> iconProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'icon');
     });
   }
 
