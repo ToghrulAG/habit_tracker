@@ -9,12 +9,14 @@ class HabitModel {
   final String userId;
   final int color;
   final DateTime startDate;
+  final String icon;
 
   HabitModel({
     required this.title,
     required this.userId,
     required this.color,
     required this.startDate,
+    required this.icon
   });
 
   factory HabitModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class HabitModel {
       userId: json['user_id'],
       color: json['color'],
       startDate: DateTime.parse(json['start_date']),
+      icon : json['icon']
     );
   }
 
@@ -32,6 +35,7 @@ class HabitModel {
       'user_id': userId,
       'color': color,
       'start_date': startDate.toIso8601String(),
+      'icon' : icon
     };
   }
 }
