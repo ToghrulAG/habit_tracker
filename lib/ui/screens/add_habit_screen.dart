@@ -101,13 +101,17 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
           GestureDetector(
             onTap: showIconPicker,
             child: Container(
+              
               width: 70,
               height: 70,
               decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 87, 87, 87),
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(16),
+            
               ),
               child: Padding(
+                
                 padding: EdgeInsets.all(15),
                 child: Image.asset(_selectedIcon),
               ),
