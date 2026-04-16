@@ -250,7 +250,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                'Vibrat iconku',
+                'Select Icon',
                 style: TextStyle(color: Colors.white, fontSize: 18),
               ),
               const SizedBox(height: 20),
@@ -271,7 +271,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                         decoration: BoxDecoration(
                           color: _selectedIcon == iconPath
                               ? Colors.blueAccent
-                              : Colors.grey,
+                              : Colors.transparent,
                           borderRadius: BorderRadius.all(Radius.circular(16)),
                         ),
                         child: Image.asset(iconPath, width: 40, height: 40),
