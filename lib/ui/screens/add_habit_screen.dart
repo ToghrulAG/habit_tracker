@@ -41,132 +41,180 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
     super.dispose();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _titleController.addListener(() {
+      setState(() {});
+    });
+  }
+
   DateTime _selectedDate = DateTime.now();
+
+  String? _errorText = null;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('New Habit')),
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-            child: TextField(
-              controller: _titleController,
-              decoration: InputDecoration(
-                hint: Text(
-                  'Habit Name',
-                  style: TextStyle(color: Colors.grey, fontSize: 16),
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        child: Column(
+          children: [
+            GestureDetector(
+              onTap: showIconPicker,
+              child: Container(
+                width: 130,
+                height: 130,
+                decoration: BoxDecoration(),
+                child: Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Image.asset(_selectedIcon),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 20),
-          const Text('Select Color', style: TextStyle(fontSize: 18)),
-          SizedBox(height: 20),
-          Wrap(
-            spacing: 15,
-            runSpacing: 15,
-            children: [
-              for (final colorValue in _availableColors)
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedColor = colorValue;
-                    });
-                  },
-                  child: Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Color(colorValue),
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: _selectedColor == colorValue
-                            ? Colors.white
-                            : Colors.transparent,
-                        width: 2,
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+              child: TextField(
+                controller: _titleController,
+                decoration: InputDecoration(
+                  errorText: _errorText,
+                  suffixIcon: _titleController.text.isNotEmpty
+                      ? IconButton(
+                          onPressed: () {
+                            _titleController.clear();
+                            FocusScope.of(context).unfocus();
+                          },
+                          icon: Icon(Icons.close),
+                        )
+                      : null,
+                  hintText: 'Habit Name',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text('Select Color', style: TextStyle(fontSize: 18)),
+            SizedBox(height: 20),
+            Wrap(
+              spacing: 15,
+              runSpacing: 15,
+              children: [
+                for (final colorValue in _availableColors)
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedColor = colorValue;
+                      });
+                    },
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Color(colorValue),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: _selectedColor == colorValue
+                              ? Colors.white
+                              : Colors.transparent,
+                          width: 2,
+                        ),
                       ),
                     ),
                   ),
-                ),
-            ],
-          ),
-          SizedBox(height: 20),
-          const Text('Vibrat iconku', style: TextStyle(fontSize: 18)),
-          const SizedBox(height: 15),
-          GestureDetector(
-            onTap: showIconPicker,
-            child: Container(
-              
-              width: 70,
-              height: 70,
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 87, 87, 87),
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(16),
-            
-              ),
-              child: Padding(
-                
-                padding: EdgeInsets.all(15),
-                child: Image.asset(_selectedIcon),
-              ),
+              ],
             ),
-          ),
-          SizedBox(height: 15),
-          const Text('Kogda ti brosil?', style: TextStyle(fontSize: 18)),
-          SizedBox(height: 20),
-          InkWell(
-            onTap: _pickDate,
-            borderRadius: BorderRadius.circular(16),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              decoration: BoxDecoration(
-                color: const Color(0xFF1E1E1E), // Темный фон кнопки
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.grey.shade800),
-              ),
+            SizedBox(height: 35),
+            const Text('Quit Date', style: TextStyle(fontSize: 18)),
+            SizedBox(height: 20),
+
+            InkWell(
+              onTap: _pickDate,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "${_selectedDate.day.toString().padLeft(2, '0')}.${_selectedDate.month.toString().padLeft(2, '0')}.${_selectedDate.year}",
-                    style: TextStyle(
-                      color: const Color.fromARGB(255, 210, 210, 210),
-                      fontSize: 18,
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
                     ),
+                    child: Icon(Icons.calendar_today),
                   ),
-                  const Icon(
-                    Icons.calendar_month,
-                    color: Color.fromARGB(255, 210, 210, 210),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Start Date',
+                        style: TextStyle(color: Colors.grey, fontSize: 14),
+                      ),
+                      Text(
+                        '${_selectedDate.day.toString().padLeft(2, '0')}.${_selectedDate.month.toString().padLeft(2, '0')}.${_selectedDate.year}',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
+                  Spacer(),
+                  Icon(Icons.arrow_forward_ios),
                 ],
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 20),
-            child: SizedBox(
-              width: 150,
-              height: 40,
+            // InkWell(
+            //   onTap: _pickDate,
+            //   borderRadius: BorderRadius.circular(16),
+            //   child: Container(
+            //     padding: const EdgeInsets.symmetric(
+            //       horizontal: 16,
+            //       vertical: 16,
+            //     ),
+            //     decoration: BoxDecoration(
+            //       color: const Color(0xFF1E1E1E), // Темный фон кнопки
+            //       borderRadius: BorderRadius.circular(16),
+            //       border: Border.all(color: Colors.grey.shade800),
+            //     ),
+            //     child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //       children: [
+            //         Text(
+            //           "${_selectedDate.day.toString().padLeft(2, '0')}.${_selectedDate.month.toString().padLeft(2, '0')}.${_selectedDate.year}",
+            //           style: TextStyle(
+            //             color: const Color.fromARGB(255, 210, 210, 210),
+            //             fontSize: 18,
+            //           ),
+            //         ),
+            //         const Icon(
+            //           Icons.calendar_month,
+            //           color: Color.fromARGB(255, 210, 210, 210),
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
+            SizedBox(height: 20),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              child: SizedBox(
+                width: 150,
+                height: 40,
 
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                  ),
+
+                  onPressed: () {
+                    _saveHabit();
+                  },
+                  child: Text('Start', style: TextStyle(color: Colors.white)),
                 ),
-
-                onPressed: () {
-                  _saveHabit();
-                },
-                child: Text('Start', style: TextStyle(color: Colors.white)),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -250,10 +298,10 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
     );
 
     if (textTitle.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Bra vvedi nazavnie')));
-      return;
+      setState(() {
+        _errorText = 'Habit name is required';
+      });
+      return ;
     }
     await context.read<HabitCubit>().newHabit(newHabit);
 
