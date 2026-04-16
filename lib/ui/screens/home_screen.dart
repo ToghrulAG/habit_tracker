@@ -5,13 +5,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../logic/cubits/habit_cubit.dart';
 import '../../logic/cubits/habit_state.dart';
 
+
+
+
 import '../widgets/habit_card.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
+
+
   @override
   Widget build(BuildContext context) {
+
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    double dynamicPadding = screenWidth * 0.05;
+
+
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 80,
@@ -54,9 +65,9 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-        actions: [
+        actions: [ 
           Padding(
-            padding: const EdgeInsets.only(right: 16),
+            padding: EdgeInsets.symmetric(horizontal: dynamicPadding),
             child: IconButton(
               onPressed: () {},
               icon: const Icon(Icons.settings, color: Colors.blueAccent),
@@ -64,28 +75,32 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocBuilder<HabitCubit, HabitState>(
-        builder: (context, state) {
-          if (state is HabitLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (state is HabitLoaded) {
-            final habits = state.habits;
-
-            if (habits.isEmpty) {
-              return const EmptyList();
+      body: SafeArea(
+        child: BlocBuilder<HabitCubit, HabitState>(
+          builder: (context, state) {
+            if (state is HabitLoading) {
+              return const Center(child: CircularProgressIndicator());
             }
+            if (state is HabitLoaded) {
+              final habits = state.habits;
 
-            return ListView.separated(
-              itemBuilder: (context, index) {
-                return HabitCard(habit: habits[index]);
-              },
-              separatorBuilder: (context, index) => const SizedBox(height: 15),
-              itemCount: habits.length,
-            );
-          }
-          return Text('data');
-        },
+              if (habits.isEmpty) {
+                return const EmptyList();
+              }
+
+              return ListView.separated(
+                physics: const BouncingScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return HabitCard(habit: habits[index]);
+                },
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 15),
+                itemCount: habits.length,
+              );
+            }
+            return Text('data');
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
