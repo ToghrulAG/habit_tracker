@@ -17,7 +17,7 @@ class HabitCubit extends Cubit<HabitState> {
       emit(HabitLoaded(habits: habits));
     } catch (e) {
       emit(HabitError(message: 'FETCH HABITS ERRORUMUZ VAR (CUBIT)'));
-      throw Exception('FETCH HABITS ERRORUMUZ VAR (CUBIT) $e');
+      throw Exception('$e');
     }
   }
 
