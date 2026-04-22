@@ -13,7 +13,7 @@ void main() async {
 
   final habitRepo = HabitRepository();
 
-  await habitRepo.init();
+  // await habitRepo.init();
 
   runApp(
     DevicePreview(
