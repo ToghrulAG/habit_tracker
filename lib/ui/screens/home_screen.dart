@@ -5,23 +5,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../logic/cubits/habit_cubit.dart';
 import '../../logic/cubits/habit_state.dart';
 
-
-
-
 import '../widgets/habit_card.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-
-
   @override
   Widget build(BuildContext context) {
-
     double screenWidth = MediaQuery.of(context).size.width;
 
     double dynamicPadding = screenWidth * 0.05;
-
 
     return Scaffold(
       appBar: AppBar(
@@ -65,7 +58,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-        actions: [ 
+        actions: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: dynamicPadding),
             child: IconButton(
@@ -78,6 +71,9 @@ class HomeScreen extends StatelessWidget {
       body: SafeArea(
         child: BlocBuilder<HabitCubit, HabitState>(
           builder: (context, state) {
+            if (state is HabitError) {
+              return Center(child: Text(state.message));
+            }
             if (state is HabitLoading) {
               return const Center(child: CircularProgressIndicator());
             }
@@ -98,7 +94,8 @@ class HomeScreen extends StatelessWidget {
                 itemCount: habits.length,
               );
             }
-            return Text('data');
+
+            return const SizedBox.shrink();
           },
         ),
       ),
