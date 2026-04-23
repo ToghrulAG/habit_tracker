@@ -2,11 +2,10 @@ import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'data/repositories/habit_repository.dart';
 import 'logic/cubits/habit_cubit.dart';
-
 import 'ui/screens/home_screen.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,19 +33,21 @@ class MyApp extends StatelessWidget {
       value: habitRepository,
       child: BlocProvider(
         create: (context) => HabitCubit(habitRepository)..fetchHabits(),
-        child: MaterialApp(
-          locale: DevicePreview.locale(context),
-          builder: DevicePreview.appBuilder,
-          debugShowCheckedModeBanner: false,
-          title: 'BadHabit tracker',
-          theme: ThemeData(
-            useMaterial3: true,
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.deepPurple,
-              brightness: Brightness.dark,
+        child: ScreenUtilInit(
+          child: MaterialApp(
+            locale: DevicePreview.locale(context),
+            builder: DevicePreview.appBuilder,
+            debugShowCheckedModeBanner: false,
+            title: 'BadHabit tracker',
+            theme: ThemeData(
+              useMaterial3: true,
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: Colors.deepPurple,
+                brightness: Brightness.dark,
+              ),
             ),
+            home: const HomeScreen(),
           ),
-          home: const HomeScreen(),
         ),
       ),
     );
