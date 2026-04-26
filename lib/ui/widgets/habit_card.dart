@@ -65,7 +65,7 @@ class HabitCard extends StatelessWidget {
                             Row(
                               children: [
                                 Text(
-                                  '${_getDaysCount(habit.startDate)}',
+                                  '${habit.daysCount}',
                                   style: TextStyle(
                                     fontSize: 20,
                                     color: Color(habit.color),
@@ -137,8 +137,6 @@ class HabitCard extends StatelessWidget {
   }
 }
 
-int _getDaysCount(DateTime startDate) {
-  return DateTime.now().difference(startDate).inDays;
-}
+
 
 
