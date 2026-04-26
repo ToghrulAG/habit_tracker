@@ -11,12 +11,16 @@ class HabitModel {
   final DateTime startDate;
   final String icon;
 
+  int get daysCount => DateTime.now().difference(startDate).inDays;
+
+  Duration get timePassed => DateTime.now().difference(startDate);
+
   HabitModel({
     required this.title,
     required this.userId,
     required this.color,
     required this.startDate,
-    required this.icon
+    required this.icon,
   });
 
   factory HabitModel.fromJson(Map<String, dynamic> json) {
@@ -25,7 +29,7 @@ class HabitModel {
       userId: json['user_id'],
       color: json['color'],
       startDate: DateTime.parse(json['start_date']),
-      icon : json['icon']
+      icon: json['icon'],
     );
   }
 
@@ -35,7 +39,7 @@ class HabitModel {
       'user_id': userId,
       'color': color,
       'start_date': startDate.toIso8601String(),
-      'icon' : icon
+      'icon': icon,
     };
   }
 }
