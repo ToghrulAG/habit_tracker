@@ -1,7 +1,11 @@
+import 'package:badhabit_tracker/core/utils/date_helper.dart';
 import 'package:badhabit_tracker/data/models/habit_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../logic/cubits/habit_cubit.dart';
+import '../widgets/live_counter.dart';
+import 'dart:async';
 
 class HabitDetailsScreen extends StatefulWidget {
   final HabitModel habit;
@@ -13,14 +17,32 @@ class HabitDetailsScreen extends StatefulWidget {
 }
 
 class _HabitDetailsScreenState extends State<HabitDetailsScreen> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (mounted) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
   void _showDeleteDialog() {
     showDialog(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: Text('Are so weak'),
+          title: Text('Are U so weak'),
           content: Text('This will delete your progress forever!'),
-
           actions: [
             TextButton(
               onPressed: () {
@@ -33,7 +55,6 @@ class _HabitDetailsScreenState extends State<HabitDetailsScreen> {
                 context.read<HabitCubit>().removeHabit(widget.habit.id);
                 Navigator.pop(context);
                 Navigator.pop(dialogContext);
-                
               },
               child: Text('Yes  iam so weak'),
             ),
@@ -45,6 +66,8 @@ class _HabitDetailsScreenState extends State<HabitDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final timeData = DateHelper.getDetailedTime(widget.habit.startDate);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.habit.title),
@@ -83,49 +106,64 @@ class _HabitDetailsScreenState extends State<HabitDetailsScreen> {
           ),
         ],
       ),
-      body: SafeArea(child: Column(children: [Text('data')])),
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.r, vertical: 10.r),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: 15.h),
+              SizedBox(
+                width: double.infinity,
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(30.r),
+                      decoration: BoxDecoration(
+                        border: BoxBorder.all(
+                          width: 10.r,
+                          color: Color(widget.habit.color),
+                        ),
+                        borderRadius: BorderRadius.circular(70.r),
+                      ),
+                      width: 140.w,
+                      child: Image.asset(widget.habit.icon),
+                    ),
+                    SizedBox(height: 20.h),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          spacing: 20.w,
+                          children: [
+                            LiveCounter(
+                              value: '${timeData['days']}',
+                              label: 'Days',
+                            ),
+                            LiveCounter(
+                              value: '${timeData['hours']}',
+                              label: 'Hours',
+                            ),
+                            LiveCounter(
+                              value: '${timeData['minutes']}',
+                              label: 'Minutes',
+                            ),
+                            LiveCounter(
+                              value: '${timeData['seconds']}',
+                              label: 'Seconds',
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// void _confirmDelete(BuildContext context, HabitModel habit) {
-//   showDialog(
-//     context: context,
-//     builder: (dialogContext) => AlertDialog(
-//       title: const Text('Are you so WEAK bro?'),
-//       content: Text('Dont delete, keep going brother?'),
-//       actions: [
-//         TextButton(
-//           onPressed: () {
-//             Navigator.pop(dialogContext);
-//           },
-//           child: const Text('I am going to win it'),
-//         ),
-//         TextButton(
-//           onPressed: () {
-//             context.read<HabitCubit>().removeHabit(habit.id);
-//             Navigator.pop(context);
-//           },
-//           child: const Text('I am Loser', style: TextStyle(color: Colors.red)),
-//         ),
-        
-        
-//       ],
-      
-      
-//     ),
-//   );
-// }
