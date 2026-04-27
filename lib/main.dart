@@ -34,20 +34,24 @@ class MyApp extends StatelessWidget {
       child: BlocProvider(
         create: (context) => HabitCubit(habitRepository)..fetchHabits(),
         child: ScreenUtilInit(
-          child: MaterialApp(
-            locale: DevicePreview.locale(context),
-            builder: DevicePreview.appBuilder,
-            debugShowCheckedModeBanner: false,
-            title: 'BadHabit tracker',
-            theme: ThemeData(
-              useMaterial3: true,
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: Colors.deepPurple,
-                brightness: Brightness.dark,
+          designSize: const Size(360, 690),
+          minTextAdapt: true,
+          builder: (context, child) {
+            return MaterialApp(
+              locale: DevicePreview.locale(context),
+              builder: DevicePreview.appBuilder,
+              debugShowCheckedModeBanner: false,
+              title: 'BadHabit tracker',
+              theme: ThemeData(
+                useMaterial3: true,
+                colorScheme: ColorScheme.fromSeed(
+                  seedColor: Colors.deepPurple,
+                  brightness: Brightness.dark,
+                ),
               ),
-            ),
-            home: const HomeScreen(),
-          ),
+              home: const HomeScreen(),
+            );
+          },
         ),
       ),
     );
