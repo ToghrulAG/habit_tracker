@@ -89,7 +89,7 @@ class HabitCard extends StatelessWidget {
                             ),
                             SizedBox(height: 5),
                             Text(
-                              '15',
+                              '${habit.attempt}',
                               style: TextStyle(
                                 fontSize: 20,
                                 color: Color(habit.color),
