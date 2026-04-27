@@ -45,4 +45,28 @@ class HabitCubit extends Cubit<HabitState> {
       throw Exception('$habitId li habit silinmedi (CUBIT)');
     }
   }
+
+  Future<void> giveUp(HabitModel habit) async {
+    List<DateTime> updatedDates = List.from(habit.failDates);
+
+    final giveUpDate = DateTime.now();
+
+    updatedDates.add(giveUpDate);
+
+    final updatedHabit = habit.copyWith(
+      startDate: giveUpDate,
+      failDates: updatedDates,
+      attempt : habit.attempt + 1
+    );
+
+    emit(HabitLoading());
+
+    try {
+      await repository.addHabit(updatedHabit);
+      await fetchHabits();
+    } catch (e) {
+      print('CUBIT YANILENMEDI GIVEUP');
+      emit(HabitError(message: '$e'));
+    }
+  }
 }
