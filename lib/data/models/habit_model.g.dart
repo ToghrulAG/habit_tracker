@@ -17,28 +17,38 @@ const HabitModelSchema = CollectionSchema(
   name: r'HabitModel',
   id: -414673950888729972,
   properties: {
-    r'color': PropertySchema(
+    r'attempt': PropertySchema(
       id: 0,
+      name: r'attempt',
+      type: IsarType.long,
+    ),
+    r'color': PropertySchema(
+      id: 1,
       name: r'color',
       type: IsarType.long,
     ),
+    r'failDates': PropertySchema(
+      id: 2,
+      name: r'failDates',
+      type: IsarType.dateTimeList,
+    ),
     r'icon': PropertySchema(
-      id: 1,
+      id: 3,
       name: r'icon',
       type: IsarType.string,
     ),
     r'startDate': PropertySchema(
-      id: 2,
+      id: 4,
       name: r'startDate',
       type: IsarType.dateTime,
     ),
     r'title': PropertySchema(
-      id: 3,
+      id: 5,
       name: r'title',
       type: IsarType.string,
     ),
     r'userId': PropertySchema(
-      id: 4,
+      id: 6,
       name: r'userId',
       type: IsarType.string,
     )
@@ -63,6 +73,7 @@ int _habitModelEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 + object.failDates.length * 8;
   bytesCount += 3 + object.icon.length * 3;
   bytesCount += 3 + object.title.length * 3;
   bytesCount += 3 + object.userId.length * 3;
@@ -75,11 +86,13 @@ void _habitModelSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.color);
-  writer.writeString(offsets[1], object.icon);
-  writer.writeDateTime(offsets[2], object.startDate);
-  writer.writeString(offsets[3], object.title);
-  writer.writeString(offsets[4], object.userId);
+  writer.writeLong(offsets[0], object.attempt);
+  writer.writeLong(offsets[1], object.color);
+  writer.writeDateTimeList(offsets[2], object.failDates);
+  writer.writeString(offsets[3], object.icon);
+  writer.writeDateTime(offsets[4], object.startDate);
+  writer.writeString(offsets[5], object.title);
+  writer.writeString(offsets[6], object.userId);
 }
 
 HabitModel _habitModelDeserialize(
@@ -89,13 +102,15 @@ HabitModel _habitModelDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = HabitModel(
-    color: reader.readLong(offsets[0]),
-    icon: reader.readString(offsets[1]),
-    startDate: reader.readDateTime(offsets[2]),
-    title: reader.readString(offsets[3]),
-    userId: reader.readString(offsets[4]),
+    attempt: reader.readLongOrNull(offsets[0]) ?? 1,
+    color: reader.readLong(offsets[1]),
+    failDates: reader.readDateTimeList(offsets[2]) ?? const [],
+    icon: reader.readString(offsets[3]),
+    id: id,
+    startDate: reader.readDateTime(offsets[4]),
+    title: reader.readString(offsets[5]),
+    userId: reader.readString(offsets[6]),
   );
-  object.id = id;
   return object;
 }
 
@@ -107,14 +122,18 @@ P _habitModelDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLong(offset)) as P;
+      return (reader.readLongOrNull(offset) ?? 1) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 2:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readDateTimeList(offset) ?? const []) as P;
     case 3:
       return (reader.readString(offset)) as P;
     case 4:
+      return (reader.readDateTime(offset)) as P;
+    case 5:
+      return (reader.readString(offset)) as P;
+    case 6:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -212,6 +231,60 @@ extension HabitModelQueryWhere
 
 extension HabitModelQueryFilter
     on QueryBuilder<HabitModel, HabitModel, QFilterCondition> {
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition> attemptEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'attempt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition>
+      attemptGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'attempt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition> attemptLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'attempt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition> attemptBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'attempt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition> colorEqualTo(
       int value) {
     return QueryBuilder.apply(this, (query) {
@@ -262,6 +335,151 @@ extension HabitModelQueryFilter
         upper: upper,
         includeUpper: includeUpper,
       ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition>
+      failDatesElementEqualTo(DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'failDates',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition>
+      failDatesElementGreaterThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'failDates',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition>
+      failDatesElementLessThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'failDates',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition>
+      failDatesElementBetween(
+    DateTime lower,
+    DateTime upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'failDates',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition>
+      failDatesLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'failDates',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition>
+      failDatesIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'failDates',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition>
+      failDatesIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'failDates',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition>
+      failDatesLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'failDates',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition>
+      failDatesLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'failDates',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition>
+      failDatesLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'failDates',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
     });
   }
 
@@ -773,6 +991,18 @@ extension HabitModelQueryLinks
 
 extension HabitModelQuerySortBy
     on QueryBuilder<HabitModel, HabitModel, QSortBy> {
+  QueryBuilder<HabitModel, HabitModel, QAfterSortBy> sortByAttempt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'attempt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterSortBy> sortByAttemptDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'attempt', Sort.desc);
+    });
+  }
+
   QueryBuilder<HabitModel, HabitModel, QAfterSortBy> sortByColor() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'color', Sort.asc);
@@ -836,6 +1066,18 @@ extension HabitModelQuerySortBy
 
 extension HabitModelQuerySortThenBy
     on QueryBuilder<HabitModel, HabitModel, QSortThenBy> {
+  QueryBuilder<HabitModel, HabitModel, QAfterSortBy> thenByAttempt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'attempt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterSortBy> thenByAttemptDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'attempt', Sort.desc);
+    });
+  }
+
   QueryBuilder<HabitModel, HabitModel, QAfterSortBy> thenByColor() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'color', Sort.asc);
@@ -911,9 +1153,21 @@ extension HabitModelQuerySortThenBy
 
 extension HabitModelQueryWhereDistinct
     on QueryBuilder<HabitModel, HabitModel, QDistinct> {
+  QueryBuilder<HabitModel, HabitModel, QDistinct> distinctByAttempt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'attempt');
+    });
+  }
+
   QueryBuilder<HabitModel, HabitModel, QDistinct> distinctByColor() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'color');
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QDistinct> distinctByFailDates() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'failDates');
     });
   }
 
@@ -953,9 +1207,22 @@ extension HabitModelQueryProperty
     });
   }
 
+  QueryBuilder<HabitModel, int, QQueryOperations> attemptProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'attempt');
+    });
+  }
+
   QueryBuilder<HabitModel, int, QQueryOperations> colorProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'color');
+    });
+  }
+
+  QueryBuilder<HabitModel, List<DateTime>, QQueryOperations>
+      failDatesProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'failDates');
     });
   }
 
