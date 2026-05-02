@@ -12,6 +12,7 @@ class HabitModel {
   final String icon;
   final int attempt;
   List<DateTime> failDates;
+  final int? record;
 
   @ignore
   int get daysCount => DateTime.now().difference(startDate).inDays;
@@ -19,6 +20,7 @@ class HabitModel {
   Duration get timePassed => DateTime.now().difference(startDate);
 
   HabitModel({
+    this.record,
     required this.title,
     this.attempt = 1,
     required this.userId,
@@ -38,6 +40,7 @@ class HabitModel {
       startDate: DateTime.parse(json['start_date']),
       icon: json['icon'],
       id: json['id'],
+      record: json['record'],
       failDates:
           (json['fail_dates'] as List?)
               ?.map((e) => DateTime.parse(e as String))
@@ -56,6 +59,7 @@ class HabitModel {
       'icon': icon,
       'fail_dates': failDates.map((e) => e.toIso8601String()).toList(),
       'id': id,
+      'record' : record
     };
   }
 
@@ -66,7 +70,8 @@ class HabitModel {
     String? icon,
     String? userId,
     List<DateTime>? failDates,
-    int? attempt
+    int? attempt,
+    int? record,
   }) {
     return HabitModel(
       id: id,
@@ -76,7 +81,8 @@ class HabitModel {
       startDate: startDate ?? this.startDate,
       icon: icon ?? this.icon,
       failDates: failDates ?? this.failDates,
-      attempt: attempt ?? this.attempt
+      attempt: attempt ?? this.attempt,
+      record: record ?? this.record
     );
   }
 }
