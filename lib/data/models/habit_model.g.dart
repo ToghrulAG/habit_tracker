@@ -37,18 +37,23 @@ const HabitModelSchema = CollectionSchema(
       name: r'icon',
       type: IsarType.string,
     ),
-    r'startDate': PropertySchema(
+    r'record': PropertySchema(
       id: 4,
+      name: r'record',
+      type: IsarType.long,
+    ),
+    r'startDate': PropertySchema(
+      id: 5,
       name: r'startDate',
       type: IsarType.dateTime,
     ),
     r'title': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'title',
       type: IsarType.string,
     ),
     r'userId': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'userId',
       type: IsarType.string,
     )
@@ -90,9 +95,10 @@ void _habitModelSerialize(
   writer.writeLong(offsets[1], object.color);
   writer.writeDateTimeList(offsets[2], object.failDates);
   writer.writeString(offsets[3], object.icon);
-  writer.writeDateTime(offsets[4], object.startDate);
-  writer.writeString(offsets[5], object.title);
-  writer.writeString(offsets[6], object.userId);
+  writer.writeLong(offsets[4], object.record);
+  writer.writeDateTime(offsets[5], object.startDate);
+  writer.writeString(offsets[6], object.title);
+  writer.writeString(offsets[7], object.userId);
 }
 
 HabitModel _habitModelDeserialize(
@@ -107,9 +113,10 @@ HabitModel _habitModelDeserialize(
     failDates: reader.readDateTimeList(offsets[2]) ?? const [],
     icon: reader.readString(offsets[3]),
     id: id,
-    startDate: reader.readDateTime(offsets[4]),
-    title: reader.readString(offsets[5]),
-    userId: reader.readString(offsets[6]),
+    record: reader.readLongOrNull(offsets[4]),
+    startDate: reader.readDateTime(offsets[5]),
+    title: reader.readString(offsets[6]),
+    userId: reader.readString(offsets[7]),
   );
   return object;
 }
@@ -130,10 +137,12 @@ P _habitModelDeserializeProp<P>(
     case 3:
       return (reader.readString(offset)) as P;
     case 4:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 5:
-      return (reader.readString(offset)) as P;
+      return (reader.readDateTime(offset)) as P;
     case 6:
+      return (reader.readString(offset)) as P;
+    case 7:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -666,6 +675,76 @@ extension HabitModelQueryFilter
     });
   }
 
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition> recordIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'record',
+      ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition>
+      recordIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'record',
+      ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition> recordEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'record',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition> recordGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'record',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition> recordLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'record',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition> recordBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'record',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<HabitModel, HabitModel, QAfterFilterCondition> startDateEqualTo(
       DateTime value) {
     return QueryBuilder.apply(this, (query) {
@@ -1027,6 +1106,18 @@ extension HabitModelQuerySortBy
     });
   }
 
+  QueryBuilder<HabitModel, HabitModel, QAfterSortBy> sortByRecord() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'record', Sort.asc);
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterSortBy> sortByRecordDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'record', Sort.desc);
+    });
+  }
+
   QueryBuilder<HabitModel, HabitModel, QAfterSortBy> sortByStartDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'startDate', Sort.asc);
@@ -1114,6 +1205,18 @@ extension HabitModelQuerySortThenBy
     });
   }
 
+  QueryBuilder<HabitModel, HabitModel, QAfterSortBy> thenByRecord() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'record', Sort.asc);
+    });
+  }
+
+  QueryBuilder<HabitModel, HabitModel, QAfterSortBy> thenByRecordDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'record', Sort.desc);
+    });
+  }
+
   QueryBuilder<HabitModel, HabitModel, QAfterSortBy> thenByStartDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'startDate', Sort.asc);
@@ -1178,6 +1281,12 @@ extension HabitModelQueryWhereDistinct
     });
   }
 
+  QueryBuilder<HabitModel, HabitModel, QDistinct> distinctByRecord() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'record');
+    });
+  }
+
   QueryBuilder<HabitModel, HabitModel, QDistinct> distinctByStartDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'startDate');
@@ -1229,6 +1338,12 @@ extension HabitModelQueryProperty
   QueryBuilder<HabitModel, String, QQueryOperations> iconProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'icon');
+    });
+  }
+
+  QueryBuilder<HabitModel, int?, QQueryOperations> recordProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'record');
     });
   }
 
