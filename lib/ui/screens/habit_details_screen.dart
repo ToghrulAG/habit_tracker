@@ -7,6 +7,7 @@ import '../../logic/cubits/habit_cubit.dart';
 import '../../logic/cubits/habit_state.dart';
 import '../widgets/live_counter.dart';
 import 'dart:async';
+import 'package:intl/intl.dart';
 
 class HabitDetailsScreen extends StatefulWidget {
   final HabitModel habit;
@@ -118,7 +119,6 @@ class _HabitDetailsScreenState extends State<HabitDetailsScreen> {
                 )
               : _currentDisplayHabit;
 
-          // Güncel veriyi buton basıldığında kullanmak üzere sakla
           _currentDisplayHabit = displayHabit;
 
           final timeData = DateHelper.getDetailedTime(displayHabit.startDate);
@@ -138,7 +138,6 @@ class _HabitDetailsScreenState extends State<HabitDetailsScreen> {
                       vertical: 15.h,
                     ),
                     child: Text(
-
                       'Attempts History',
                       style: TextStyle(
                         fontSize: 20.sp,
@@ -149,18 +148,34 @@ class _HabitDetailsScreenState extends State<HabitDetailsScreen> {
                   ),
                 ),
                 SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      if (index >= reversedLogs.length) return const SizedBox.shrink();
-                      
-                      return _buildHistoryItem(
-                        reversedLogs[index],
-                        index,
-                        reversedLogs.length,
-                      );
-                    },
-                    childCount: reversedLogs.length,
-                  ),
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    if (index == reversedLogs.length) {
+                      return _buildStartDate(widget.habit.startDate);
+                    }
+
+                    final currentDate = reversedLogs[index];
+
+                    DateTime? previousDate;
+
+                    if (index + 1 < reversedLogs.length) {
+                      previousDate = reversedLogs[index + 1];
+                    } else {
+                      previousDate = widget.habit.startDate;
+                    }
+
+                    final differenceDate = currentDate.difference(previousDate).abs();
+
+                    return Column(
+                      children: [
+                        _buildHistoryItem(
+                          reversedLogs[index],
+                          index,
+                          reversedLogs.length,
+                        ),
+                        _buildTimeGap(differenceDate),
+                      ],
+                    );
+                  }, childCount: reversedLogs.length + 1),
                 ),
               ],
             ),
@@ -183,7 +198,8 @@ class _HabitDetailsScreenState extends State<HabitDetailsScreen> {
               Container(
                 padding: EdgeInsets.all(30.r),
                 decoration: BoxDecoration(
-                  border: Border.all( // Düzeltildi: BoxBorder.all yerine Border.all
+                  border: Border.all(
+                    // Düzeltildi: BoxBorder.all yerine Border.all
                     width: 10.r,
                     color: Color(currentHabit.color),
                   ),
@@ -208,21 +224,33 @@ class _HabitDetailsScreenState extends State<HabitDetailsScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       spacing: 20.w,
                       children: [
-                        LiveCounter(value: '${timeData['days']}', label: 'Days'),
-                        LiveCounter(value: '${timeData['hours']}', label: 'Hours'),
-                        LiveCounter(value: '${timeData['minutes']}', label: 'Minutes'),
-                        LiveCounter(value: '${timeData['seconds']}', label: 'Seconds'),
+                        LiveCounter(
+                          value: '${timeData['days']}',
+                          label: 'Days',
+                        ),
+                        LiveCounter(
+                          value: '${timeData['hours']}',
+                          label: 'Hours',
+                        ),
+                        LiveCounter(
+                          value: '${timeData['minutes']}',
+                          label: 'Minutes',
+                        ),
+                        LiveCounter(
+                          value: '${timeData['seconds']}',
+                          label: 'Seconds',
+                        ),
                       ],
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     child: SizedBox(
-                      width: 150,
-                      height: 40,
+                      width: 150.w,
+                      height: 40.h,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blueAccent,
+                          backgroundColor: const Color.fromARGB(255, 113, 3, 3),
                         ),
                         onPressed: () {
                           context.read<HabitCubit>().giveUp(currentHabit);
@@ -241,7 +269,7 @@ class _HabitDetailsScreenState extends State<HabitDetailsScreen> {
                         },
                         child: const Text(
                           'Give Up',
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
                       ),
                     ),
@@ -257,41 +285,110 @@ class _HabitDetailsScreenState extends State<HabitDetailsScreen> {
 
   Widget _buildHistoryItem(DateTime date, int index, int totalCount) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20.r, vertical: 8.h),
-      padding: EdgeInsets.all(15.r),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 81, 0, 0),
-        borderRadius: BorderRadius.circular(15.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        color: const Color.fromARGB(255, 242, 8, 8).withOpacity(0.2), 
+        border: Border.all(color: const Color.fromARGB(154, 206, 2, 22)),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            backgroundColor: Colors.blueAccent.withOpacity(0.1),
-            child: Text(
-              "${totalCount - index}",
-              style: const TextStyle(
-                color: Colors.blueAccent,
-                fontWeight: FontWeight.bold,
-              ),
+          const Icon(Icons.block_rounded, color: Color.fromARGB(174, 206, 2, 22)),
+          const SizedBox(width: 12),
+          Text(
+             DateFormat('MMM d yyyy - HH:mm').format(date),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(width: 15.w),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              
-              Text(
-                "${date.day}/${date.month}/${date.year} - ${date.hour}:${date.minute}",
-                style: TextStyle(fontSize: 16.sp),
-              ),
-            ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTimeGap(Duration duration) {
+    String gapText = "";
+
+    if (duration.inDays > 0) {
+      gapText = "${duration.inDays} Gün Dayandın";
+    } else if (duration.inHours > 0) {
+      gapText = "${duration.inHours} Saat Dayandın";
+    } else {
+      gapText = "${duration.inMinutes} Dakika Dayandın";
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 2,
+            height: 20,
+            decoration: BoxDecoration(
+              color: Colors.white24, 
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.timer_outlined,
+                  color: Colors.white38,
+                  size: 14,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  gapText,
+                  style: const TextStyle(
+                    color: Colors.white54,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Alttaki kutuya uzanan dikey bağlantı çizgisi
+          Container(
+            width: 2,
+            height: 20,
+            decoration: BoxDecoration(
+              color: Colors.white24,
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStartDate(DateTime date) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.green.withOpacity(0.2), 
+        border: Border.all(color: Colors.green.withOpacity(0.5)),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.rocket_launch, color: Colors.green),
+          const SizedBox(width: 12),
+          Text(
+             DateFormat('MMM d yyyy - HH:mm').format(date),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),
