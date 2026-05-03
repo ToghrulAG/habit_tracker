@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'data/repositories/habit_repository.dart';
 import 'logic/cubits/habit_cubit.dart';
-import 'ui/screens/home_screen.dart';
+import 'ui/screens/home_screen/home_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() async {
@@ -12,7 +12,7 @@ void main() async {
 
   final habitRepo = HabitRepository();
 
-  // await habitRepo.init();
+  await habitRepo.init();
 
   runApp(
     DevicePreview(

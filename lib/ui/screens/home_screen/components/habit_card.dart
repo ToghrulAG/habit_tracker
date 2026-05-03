@@ -1,6 +1,6 @@
 import 'package:badhabit_tracker/data/models/habit_model.dart';
 import 'package:flutter/material.dart';
-import '../screens/habit_details_screen.dart';
+import '../../habit_details/habit_details_screen.dart';
 
 class HabitCard extends StatelessWidget {
   final HabitModel habit;

@@ -1,11 +1,10 @@
-import 'package:badhabit_tracker/ui/screens/add_habit_screen.dart';
-import 'package:badhabit_tracker/ui/widgets/empty_list.dart';
+import 'package:badhabit_tracker/ui/screens/add_habit/add_habit_screen.dart';
+import 'package:badhabit_tracker/ui/screens/home_screen/components/empty_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../logic/cubits/habit_cubit.dart';
-import '../../logic/cubits/habit_state.dart';
-
-import '../widgets/habit_card.dart';
+import '../../../logic/cubits/habit_cubit.dart';
+import '../../../logic/cubits/habit_state.dart';
+import 'components/habit_card.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

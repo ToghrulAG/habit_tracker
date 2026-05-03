@@ -1,7 +1,7 @@
 import 'package:badhabit_tracker/logic/cubits/habit_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../data/models/habit_model.dart';
+import '../../../data/models/habit_model.dart';
 
 class AddHabitScreen extends StatefulWidget {
   const AddHabitScreen({super.key});
@@ -295,6 +295,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
       color: _selectedColor,
       startDate: _selectedDate,
       icon: _selectedIcon,
+      
     );
 
     if (textTitle.isEmpty) {
