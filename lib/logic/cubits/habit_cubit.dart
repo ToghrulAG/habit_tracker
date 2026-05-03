@@ -24,7 +24,12 @@ class HabitCubit extends Cubit<HabitState> {
   Future<void> newHabit(HabitModel newHabit) async {
     emit(HabitLoading());
     try {
-      await repository.addHabit(newHabit);
+      final initialRecord = DateTime.now().difference(newHabit.startDate).inDays;
+
+      final habitWithRecord = newHabit.copyWith(
+        record: initialRecord
+      );
+      await repository.addHabit(habitWithRecord);
       await fetchHabits();
       print('NEWHABIT ISLEDI (CUBIT), STATEYI YENILEYIREM ');
     } catch (e) {
@@ -47,6 +52,10 @@ class HabitCubit extends Cubit<HabitState> {
   }
 
   Future<void> giveUp(HabitModel habit) async {
+
+    final recordCheck = DateTime.now().difference(habit.startDate).inDays;
+    final updatedRecord = recordCheck > (habit.record ?? 0) ? recordCheck : habit.record;
+
     List<DateTime> updatedDates = List.from(habit.failDates);
 
     final giveUpDate = DateTime.now();
@@ -56,7 +65,8 @@ class HabitCubit extends Cubit<HabitState> {
     final updatedHabit = habit.copyWith(
       startDate: giveUpDate,
       failDates: updatedDates,
-      attempt : habit.attempt + 1
+      attempt: habit.attempt + 1,
+      record: updatedRecord,
     );
 
     emit(HabitLoading());
