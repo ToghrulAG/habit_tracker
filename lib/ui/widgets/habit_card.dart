@@ -1,7 +1,5 @@
 import 'package:badhabit_tracker/data/models/habit_model.dart';
-// import 'package:badhabit_tracker/logic/cubits/habit_cubit.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
 import '../screens/habit_details_screen.dart';
 
 class HabitCard extends StatelessWidget {
@@ -111,7 +109,7 @@ class HabitCard extends StatelessWidget {
                             Row(
                               children: [
                                 Text(
-                                  '15',
+                                  '${habit.record ?? 0}',
                                   style: TextStyle(
                                     fontSize: 20,
                                     color: Color(habit.color),
@@ -136,7 +134,3 @@ class HabitCard extends StatelessWidget {
     );
   }
 }
-
-
-
-
