@@ -25,8 +25,13 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         automaticallyImplyLeading: false,
+        
         title: Row(
           children: [
+            IconButton(onPressed: () {
+              context.read<AuthCubit>().logOut();
+
+            }, icon: Icon(Icons.logout)),
             CircleAvatar(
               radius: 25.r,
               backgroundColor: Colors.blueAccent,
