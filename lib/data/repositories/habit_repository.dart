@@ -34,12 +34,12 @@ class HabitRepository {
     }
   }
 
-  Future<void> addHabit(HabitModel newHabit) async {
+  Future<int> addHabit(HabitModel newHabit) async {
     final db = await isar;
 
     try {
-      await db.writeTxn(() async {
-        await db.habitModels.put(newHabit);
+      return await db.writeTxn(() async {
+        return await db.habitModels.put(newHabit);
       });
     } catch (e) {
       throw Exception(e);
@@ -65,5 +65,25 @@ class HabitRepository {
     } catch (e) {
       return [];
     }
+  }
+
+  Future<void> syncHabitsWithLocal(List<HabitModel> remoteHabits) async {
+    final db = await isar;
+
+    try {
+      await db.writeTxn(() async {
+        await db.habitModels.putAll(remoteHabits);
+      });
+    } catch (e) {
+      throw Exception("Local DB senkronizasyon hatasi $e");
+    }
+  }
+
+  Future<void> clearAllLocalDb() async {
+    final db = await isar;
+
+    await db.writeTxn(() async {
+      await db.habitModels.clear();
+    });
   }
 }
