@@ -1,7 +1,9 @@
+import 'package:badhabit_tracker/logic/cubits/auth_cubit.dart';
 import 'package:badhabit_tracker/ui/screens/add_habit/add_habit_screen.dart';
 import 'package:badhabit_tracker/ui/screens/home_screen/components/empty_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../logic/cubits/habit_cubit.dart';
 import '../../../logic/cubits/habit_state.dart';
 import 'components/habit_card.dart';
@@ -15,6 +17,8 @@ class HomeScreen extends StatelessWidget {
 
     double dynamicPadding = screenWidth * 0.05;
 
+    final user = context.watch<AuthCubit>().state;
+
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 80,
@@ -23,10 +27,15 @@ class HomeScreen extends StatelessWidget {
         automaticallyImplyLeading: false,
         title: Row(
           children: [
-            const CircleAvatar(
-              radius: 25,
+            CircleAvatar(
+              radius: 25.r,
               backgroundColor: Colors.blueAccent,
-              child: Icon(Icons.person, color: Colors.white, size: 30),
+        
+              foregroundImage: user?.photoURL != null
+                  ? NetworkImage(user!.photoURL!)
+                  : null,
+            
+              child: const Icon(Icons.person, color: Colors.white, size: 30),
             ),
             const SizedBox(width: 15),
             Expanded(
@@ -35,7 +44,7 @@ class HomeScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Hey Toghrul',
+                    'Hey ${user?.displayName?.split(' ')[0] ?? 'User'}',
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
