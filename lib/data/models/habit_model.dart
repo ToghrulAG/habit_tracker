@@ -72,9 +72,10 @@ class HabitModel {
     List<DateTime>? failDates,
     int? attempt,
     int? record,
+    int? id
   }) {
     return HabitModel(
-      id: id,
+      id: id ?? this.id,
       title: title ?? this.title,
       userId: this.userId,
       color: color ?? this.color,
