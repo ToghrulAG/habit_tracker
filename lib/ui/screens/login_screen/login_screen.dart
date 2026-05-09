@@ -1,5 +1,8 @@
 import 'dart:ui';
+import 'package:badhabit_tracker/logic/cubits/auth_cubit.dart';
+import 'package:badhabit_tracker/ui/screens/signIn_screen/signIn_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -99,9 +102,7 @@ class _LoginScreenState extends State<LoginScreen>
                     SizedBox(height: 10.h),
                     SizedBox(
                       width: 150.w,
-                      child: Image.asset(
-                        'lib/assets/icons/logo.png',
-                      ),
+                      child: Image.asset('lib/assets/icons/logo.png'),
                     ),
                     SizedBox(height: 5.h),
                     Row(
@@ -157,9 +158,9 @@ class _LoginScreenState extends State<LoginScreen>
                         );
                       },
                     ),
-                    
+
                     SizedBox(height: 20.h),
-                    
+
                     // Typing Animasyonu: Subtitle
                     AnimatedBuilder(
                       animation: _subTitleAnimation,
@@ -187,13 +188,24 @@ class _LoginScreenState extends State<LoginScreen>
                       height: 40.h,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 37, 76, 142),
+                          backgroundColor: const Color.fromARGB(
+                            255,
+                            37,
+                            76,
+                            142,
+                          ),
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25.r),
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => SignInScreen(),
+                            ),
+                          );
+                        },
                         child: Text(
                           'SIGN IN',
                           style: TextStyle(
@@ -203,7 +215,7 @@ class _LoginScreenState extends State<LoginScreen>
                         ),
                       ),
                     ),
-                    
+
                     TextButton(
                       onPressed: () {},
                       child: Text(
@@ -220,10 +232,7 @@ class _LoginScreenState extends State<LoginScreen>
 
                     Text(
                       'Sign in with:',
-                      style: TextStyle(
-                        color: Colors.white54,
-                        fontSize: 13.sp,
-                      ),
+                      style: TextStyle(color: Colors.white54, fontSize: 13.sp),
                     ),
                     SizedBox(height: 15.h),
 
@@ -231,7 +240,16 @@ class _LoginScreenState extends State<LoginScreen>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.facebook, color: Colors.white, size: 32.sp),
+                        IconButton(
+                          onPressed: () {
+                            context.read<AuthCubit>().signInWithGoogle();
+                          },
+                          icon: Icon(
+                            Icons.facebook,
+                            color: Colors.white,
+                            size: 32.sp,
+                          ),
+                        ),
                         SizedBox(width: 30.w),
                         Icon(Icons.facebook, color: Colors.white, size: 32.sp),
                       ],
