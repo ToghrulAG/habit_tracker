@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "168763982278",
+    "project_id": "habit-tracker-2f02c",
+    "storage_bucket": "habit-tracker-2f02c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:168763982278:android:cf0aa383e4488b291db2c7",
+        "android_client_info": {
+          "package_name": "com.project.badhabit_tracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "168763982278-ka579mnc6slhv1cec3h3rvbe2p7t1kpg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.project.badhabit_tracker",
+            "certificate_hash": "238742236d3e28b935045e946c7e35c298f7be3c"
+          }
+        },
+        {
+          "client_id": "168763982278-v8t3mo61hlutphf7m6e54aprsv99p4bh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4tMppfqYgzl2xZnHUVG2F7YhQZIaasGM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "168763982278-v8t3mo61hlutphf7m6e54aprsv99p4bh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "168763982278-13dm9nlm896saslf875a7ahk6288isgc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.badhabitTracker"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
