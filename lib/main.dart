@@ -25,10 +25,11 @@ void main() async {
   await habitRepo.init();
 
   runApp(
-    DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (context) => MyApp(habitRepository: habitRepo),
-    ),
+    // DevicePreview(
+    //   enabled: !kReleaseMode,
+    //   builder: (context) => 
+    // ),
+    MyApp(habitRepository: habitRepo),
   );
 }
 
@@ -43,16 +44,29 @@ class MyApp extends StatelessWidget {
       value: habitRepository,
       child: MultiBlocProvider(
         providers: [
-          BlocProvider(create: (context) => AuthCubit()),
-          BlocProvider(create: (context) => HabitCubit(habitRepository)),
+          BlocProvider(create: (context) => AuthCubit(habitRepository)),
+          BlocProvider(
+            create: (context) {
+              // Firebase'den mevcut kullanıcıyı çek
+              final user = FirebaseAuth.instance.currentUser;
+
+              // Kullanıcı varsa ID'sini al, yoksa boş veya misafir ID'si ver
+              final uid = user?.uid ?? 'guest_user';
+
+              return HabitCubit(
+                habitRepository,
+                userId: uid, // Cubit'in beklediği parametreyi buraya pasladık
+              );
+            },
+          ),
         ],
         child: ScreenUtilInit(
           designSize: const Size(360, 690),
           minTextAdapt: true,
           builder: (context, child) {
             return MaterialApp(
-              locale: DevicePreview.locale(context),
-              builder: DevicePreview.appBuilder,
+              // locale: DevicePreview.locale(context),
+              // builder: DevicePreview.appBuilder,
               debugShowCheckedModeBanner: false,
               title: 'BadHabit tracker',
               theme: ThemeData(
@@ -69,7 +83,7 @@ class MyApp extends StatelessWidget {
                     return const HomeScreen();
                   } else {
                     return const LoginScreen();
-                  }  
+                  }
                 },
               ),
             );
