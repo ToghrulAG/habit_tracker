@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import '../../../../data/models/habit_model.dart';
 import '../../../../logic/cubits/habit_cubit.dart';
 import '../components/live_counter.dart';
@@ -58,7 +59,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                   borderRadius: BorderRadius.circular(70.r),
                 ),
                 width: 140.w,
-                child: Image.asset(widget.currentHabit.icon),
+                child: SvgPicture.asset(widget.currentHabit.icon),
               ),
               SizedBox(height: 20.h),
               
