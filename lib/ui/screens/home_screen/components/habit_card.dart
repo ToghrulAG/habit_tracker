@@ -1,6 +1,8 @@
 import 'package:badhabit_tracker/data/models/habit_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import '../../habit_details/habit_details_screen.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class HabitCard extends StatelessWidget {
   final HabitModel habit;
@@ -27,7 +29,7 @@ class HabitCard extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Image.asset(habit.icon, width: 50, height: 50),
+              SvgPicture.asset(habit.icon, width: 50.w, height: 50.h),
               SizedBox(width: 15),
 
               Expanded(
@@ -75,7 +77,7 @@ class HabitCard extends StatelessWidget {
                             ),
                           ],
                         ),
-                        Column(
+                        Column( 
                           children: [
                             SizedBox(height: 5),
                             Text(
