@@ -13,6 +13,7 @@ class HabitModel {
   final int attempt;
   List<DateTime> failDates;
   final int? record;
+  final int position;
 
   @ignore
   int get daysCount => DateTime.now().difference(startDate).inDays;
@@ -29,6 +30,7 @@ class HabitModel {
     required this.icon,
     this.failDates = const [],
     this.id = Isar.autoIncrement,
+    required this.position
   });
 
   factory HabitModel.fromJson(Map<String, dynamic> json) {
@@ -41,6 +43,7 @@ class HabitModel {
       icon: json['icon'],
       id: json['id'],
       record: json['record'],
+      position: json['position'] as int? ?? 0,
       failDates:
           (json['fail_dates'] as List?)
               ?.map((e) => DateTime.parse(e as String))
@@ -59,7 +62,8 @@ class HabitModel {
       'icon': icon,
       'fail_dates': failDates.map((e) => e.toIso8601String()).toList(),
       'id': id,
-      'record' : record
+      'record' : record,
+      'position' : position
     };
   }
 
@@ -72,6 +76,7 @@ class HabitModel {
     List<DateTime>? failDates,
     int? attempt,
     int? record,
+    int? position,
     int? id
   }) {
     return HabitModel(
@@ -83,7 +88,8 @@ class HabitModel {
       icon: icon ?? this.icon,
       failDates: failDates ?? this.failDates,
       attempt: attempt ?? this.attempt,
-      record: record ?? this.record
+      record: record ?? this.record,  
+      position:  position ?? this.position
     );
   }
 }
