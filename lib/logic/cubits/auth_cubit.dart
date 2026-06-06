@@ -12,28 +12,23 @@ class AuthCubit extends Cubit<User?> {
 
   Future<void> signInWithGoogle() async {
     try {
-      // 1. Önce kimlik doğrulaması (Authentication) yapıyoruz
+  
       final GoogleSignInAccount? googleUser = await _googleSignIn
           .authenticate();
       if (googleUser == null) return;
 
-      // 2. KRİTİK NOKTA: accessToken almak için "authorizeScopes" çağırmalıyız
-      // Bu işlem kullanıcıdan e-posta ve profil izni ister.
       final authorizedUser = await googleUser.authorizationClient
           .authorizeScopes(['email', 'profile']);
 
-      // 3. Token'ları topluyoruz
       final String? idToken = (await googleUser.authentication).idToken;
       final String? accessToken =
-          authorizedUser.accessToken; // Artık hata vermez!
+          authorizedUser.accessToken; 
 
-      // 4. Firebase Credential oluşturuyoruz
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: accessToken,
         idToken: idToken,
       );
 
-      // 5. Firebase'e giriş yapıyoruz
       final UserCredential userCredential = await _auth.signInWithCredential(
         credential,
       );
