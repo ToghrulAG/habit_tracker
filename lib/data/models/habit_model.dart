@@ -4,7 +4,6 @@ part 'habit_model.g.dart';
 @collection
 class HabitModel {
   Id id = Isar.autoIncrement;
-
   final String title;
   final String userId;
   final int color;
@@ -30,7 +29,7 @@ class HabitModel {
     required this.icon,
     this.failDates = const [],
     this.id = Isar.autoIncrement,
-    required this.position
+    required this.position,
   });
 
   factory HabitModel.fromJson(Map<String, dynamic> json) {
@@ -77,9 +76,10 @@ class HabitModel {
     int? attempt,
     int? record,
     int? position,
-    int? id
+    int? id,
   }) {
     return HabitModel(
+
       id: id ?? this.id,
       title: title ?? this.title,
       userId: this.userId,
