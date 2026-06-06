@@ -1,7 +1,9 @@
 import 'package:badhabit_tracker/logic/cubits/habit_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import '../../../data/models/habit_model.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AddHabitScreen extends StatefulWidget {
   const AddHabitScreen({super.key});
@@ -23,14 +25,14 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
   late int _selectedColor = _availableColors[0];
 
   final List<String> _availableIcons = [
-    'lib/assets/icons/alcohol.png',
-    'lib/assets/icons/gambling.png',
-    'lib/assets/icons/gaming.png',
-    'lib/assets/icons/social-media.png',
-    'lib/assets/icons/pornography.png',
-    'lib/assets/icons/masturbation.png',
-    'lib/assets/icons/marijuana.png',
-    'lib/assets/icons/drug.png',
+    'lib/assets/icons/alcohol.svg',
+    'lib/assets/icons/gambling.svg',
+    // 'lib/assets/icons/gaming.png',
+    // 'lib/assets/icons/social-media.png',
+    // 'lib/assets/icons/pornography.png',
+    // 'lib/assets/icons/masturbation.png',
+    'lib/assets/icons/marijuana.svg',
+    // 'lib/assets/icons/drug.png',
   ];
 
   late String _selectedIcon = _availableIcons[0];
@@ -58,7 +60,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
     return Scaffold(
       appBar: AppBar(title: Text('New Habit')),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
         child: Column(
           children: [
             GestureDetector(
@@ -69,12 +71,12 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                 decoration: BoxDecoration(),
                 child: Padding(
                   padding: EdgeInsets.all(15),
-                  child: Image.asset(_selectedIcon),
+                  child: SvgPicture.asset(_selectedIcon),
                 ),
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
               child: TextField(
                 controller: _titleController,
                 decoration: InputDecoration(
@@ -97,7 +99,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
             ),
             const SizedBox(height: 20),
             const Text('Select Color', style: TextStyle(fontSize: 18)),
-            SizedBox(height: 20),
+            SizedBox(height: 20.h),
             Wrap(
               spacing: 15,
               runSpacing: 15,
@@ -110,8 +112,8 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                       });
                     },
                     child: Container(
-                      width: 50,
-                      height: 50,
+                      width: 50.w,
+                      height: 50.h,
                       decoration: BoxDecoration(
                         color: Color(colorValue),
                         shape: BoxShape.circle,
@@ -119,7 +121,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                           color: _selectedColor == colorValue
                               ? Colors.white
                               : Colors.transparent,
-                          width: 2,
+                          width: 2.w,
                         ),
                       ),
                     ),
@@ -128,16 +130,16 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
             ),
             SizedBox(height: 35),
             const Text('Quit Date', style: TextStyle(fontSize: 18)),
-            SizedBox(height: 20),
+            SizedBox(height: 20.h),
 
             InkWell(
               onTap: _pickDate,
               child: Row(
                 children: [
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    padding: EdgeInsets.symmetric(horizontal: 15.h),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
+                      borderRadius: BorderRadius.circular(50.r),
                     ),
                     child: Icon(Icons.calendar_today),
                   ),
@@ -152,7 +154,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                         '${_selectedDate.day.toString().padLeft(2, '0')}.${_selectedDate.month.toString().padLeft(2, '0')}.${_selectedDate.year}',
                         style: TextStyle(
                           color: Colors.grey,
-                          fontSize: 15,
+                          fontSize: 15.sp,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -163,43 +165,12 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                 ],
               ),
             ),
-            // InkWell(
-            //   onTap: _pickDate,
-            //   borderRadius: BorderRadius.circular(16),
-            //   child: Container(
-            //     padding: const EdgeInsets.symmetric(
-            //       horizontal: 16,
-            //       vertical: 16,
-            //     ),
-            //     decoration: BoxDecoration(
-            //       color: const Color(0xFF1E1E1E), // Темный фон кнопки
-            //       borderRadius: BorderRadius.circular(16),
-            //       border: Border.all(color: Colors.grey.shade800),
-            //     ),
-            //     child: Row(
-            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //       children: [
-            //         Text(
-            //           "${_selectedDate.day.toString().padLeft(2, '0')}.${_selectedDate.month.toString().padLeft(2, '0')}.${_selectedDate.year}",
-            //           style: TextStyle(
-            //             color: const Color.fromARGB(255, 210, 210, 210),
-            //             fontSize: 18,
-            //           ),
-            //         ),
-            //         const Icon(
-            //           Icons.calendar_month,
-            //           color: Color.fromARGB(255, 210, 210, 210),
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-            SizedBox(height: 20),
+            SizedBox(height: 20.h),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 20),
               child: SizedBox(
-                width: 150,
-                height: 40,
+                width: 150.w,
+                height: 40.h,
 
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -274,7 +245,8 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                               : Colors.transparent,
                           borderRadius: BorderRadius.all(Radius.circular(16)),
                         ),
-                        child: Image.asset(iconPath, width: 40, height: 40),
+                        child: SvgPicture.asset(iconPath, semanticsLabel: 'Icon', width: 40.w, height: 40.h,),
+                        // child: Image.asset(iconPath, width: 40, height: 40),
                       ),
                     );
                   }),
@@ -295,6 +267,8 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
       color: _selectedColor,
       startDate: _selectedDate,
       icon: _selectedIcon,
+      position: 0
+
       
     );
 
