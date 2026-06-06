@@ -15,7 +15,10 @@ class HabitCubit extends Cubit<HabitState> {
   }
 
   Future<void> fetchHabits() async {
+    
+     print("fetchHabits çalıştı, userId: $userId"); 
     emit(HabitLoading());
+    await repository.clearAllLocalDb();
 
     try {
       final snapShot = await _firestore
@@ -42,7 +45,6 @@ class HabitCubit extends Cubit<HabitState> {
 
     emit(HabitLoading());
     try {
-      // 1. Kayıt (record) hesaplamasını yapıyoruz
       final initialRecord = DateTime.now()
           .difference(newHabit.startDate)
           .inDays;
@@ -127,5 +129,54 @@ class HabitCubit extends Cubit<HabitState> {
     }
   }
 
- 
+  Future<void> reorderHabits(int oldIndex, int newIndex) async {
+  if (state is HabitLoaded) {
+    final habits = List<HabitModel>.from((state as HabitLoaded).habits);
+
+    if (newIndex > oldIndex) {
+      newIndex -= 1;
+    }
+
+    // 1. Listedeki yerini değiştir
+    final item = habits.removeAt(oldIndex);
+    habits.insert(newIndex, item);
+
+    // 2. KRİTİK ADIM: Her bir habit'in position değerini yeni sırasına göre güncelle
+    // i değeri 0, 1, 2... diye giderken habitlerin position'ı da öyle olur.
+    for (int i = 0; i < habits.length; i++) {
+      habits[i] = habits[i].copyWith(position: i);
+    }
+
+    // 3. UI'ı hemen güncelle (Gecikme olmasın)
+    emit(HabitLoaded(habits: habits));
+
+    try {
+      // 4. Yerel Veritabanını (Isar) güncelle
+      // syncHabitsWithLocal metoduna bu yeni listeyi gönderiyoruz
+      await repository.syncHabitsWithLocal(habits);
+
+      // 5. Firestore'u güncelle
+      // Burada bir batch (toplu işlem) kullanmak çok daha hızlıdır
+      final batch = _firestore.batch();
+      
+      for (var habit in habits) {
+        final docRef = _firestore
+            .collection('users')
+            .doc(userId)
+            .collection('habits')
+            .doc(habit.id.toString());
+            
+        batch.set(docRef, habit.toJson());
+      }
+      
+      await batch.commit(); // Tüm değişiklikleri tek seferde Firestore'a gönderir
+      
+      print('Sıralama başarıyla kaydedildi.');
+    } catch (e) {
+      print("Sıralama kaydedilirken hata oluştu: $e");
+      // Hata olursa verileri tekrar çekerek listeyi eski haline döndür
+      fetchHabits();
+    }
+  }
+}
 }
