@@ -1,9 +1,7 @@
 import 'package:badhabit_tracker/firebase_options.dart';
 import 'package:badhabit_tracker/logic/cubits/auth_cubit.dart';
 import 'package:badhabit_tracker/ui/screens/login_screen/login_screen.dart';
-import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'data/repositories/habit_repository.dart';
@@ -16,21 +14,20 @@ import 'package:firebase_auth/firebase_auth.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    print("Firebase init hatası: $e");
+  }
 
   await GoogleSignIn.instance.initialize();
 
   final habitRepo = HabitRepository();
-
   await habitRepo.init();
 
-  runApp(
-    // DevicePreview(
-    //   enabled: !kReleaseMode,
-    //   builder: (context) => 
-    // ),
-    MyApp(habitRepository: habitRepo),
-  );
+  runApp(MyApp(habitRepository: habitRepo));
 }
 
 class MyApp extends StatelessWidget {
@@ -42,50 +39,47 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return RepositoryProvider.value(
       value: habitRepository,
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (context) => AuthCubit(habitRepository)),
-          BlocProvider(
-            create: (context) {
-              // Firebase'den mevcut kullanıcıyı çek
-              final user = FirebaseAuth.instance.currentUser;
-
-              // Kullanıcı varsa ID'sini al, yoksa boş veya misafir ID'si ver
-              final uid = user?.uid ?? 'guest_user';
-
-              return HabitCubit(
-                habitRepository,
-                userId: uid, // Cubit'in beklediği parametreyi buraya pasladık
-              );
-            },
-          ),
-        ],
+      child: BlocProvider(
+        create: (context) => AuthCubit(habitRepository),
         child: ScreenUtilInit(
           designSize: const Size(360, 690),
           minTextAdapt: true,
           builder: (context, child) {
-            return MaterialApp(
-              // locale: DevicePreview.locale(context),
-              // builder: DevicePreview.appBuilder,
-              debugShowCheckedModeBanner: false,
-              title: 'BadHabit tracker',
-              theme: ThemeData(
-                useMaterial3: true,
-                colorScheme: ColorScheme.fromSeed(
-                  seedColor: Colors.deepPurple,
-                  brightness: Brightness.dark,
-                ),
-              ),
-              home: BlocBuilder<AuthCubit, User?>(
-                builder: (context, user) {
-                  print("Mevcut Kullanıcı Durumu: ${user?.email}");
-                  if (user != null) {
-                    return const HomeScreen();
-                  } else {
-                    return const LoginScreen();
-                  }
-                },
-              ),
+            return BlocBuilder<AuthCubit, User?>(
+              builder: (context, user) {
+                if (user != null) {
+                  return BlocProvider(
+                    key: ValueKey(user.uid),
+                    create: (context) =>
+                        HabitCubit(habitRepository, userId: user.uid),
+                    child: MaterialApp(
+                      debugShowCheckedModeBanner: false,
+                      title: 'BadHabit tracker',
+                      theme: ThemeData(
+                        useMaterial3: true,
+                        colorScheme: ColorScheme.fromSeed(
+                          seedColor: Colors.deepPurple,
+                          brightness: Brightness.dark,
+                        ),
+                      ),
+                      home: const HomeScreen(),
+                    ),
+                  );
+                } else {
+                  return MaterialApp(
+                    debugShowCheckedModeBanner: false,
+                    title: 'BadHabit tracker',
+                    theme: ThemeData(
+                      useMaterial3: true,
+                      colorScheme: ColorScheme.fromSeed(
+                        seedColor: Colors.deepPurple,
+                        brightness: Brightness.dark,
+                      ),
+                    ),
+                    home: const LoginScreen(),
+                  );
+                }
+              },
             );
           },
         ),
