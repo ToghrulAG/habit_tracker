@@ -1,6 +1,7 @@
-import 'package:badhabit_tracker/logic/cubits/auth_cubit.dart';
+import '../../../logic/cubits/auth_cubit.dart';
 import 'package:badhabit_tracker/ui/screens/add_habit/add_habit_screen.dart';
 import 'package:badhabit_tracker/ui/screens/home_screen/components/empty_list.dart';
+import 'package:badhabit_tracker/ui/screens/settings/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,6 +19,7 @@ class HomeScreen extends StatelessWidget {
     double dynamicPadding = screenWidth * 0.05;
 
     final user = context.watch<AuthCubit>().state;
+    final habitCubit = context.read<HabitCubit>(); 
 
     return Scaffold(
       appBar: AppBar(
@@ -25,21 +27,17 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         automaticallyImplyLeading: false,
-        
+
         title: Row(
           children: [
-            IconButton(onPressed: () {
-              context.read<AuthCubit>().logOut();
-
-            }, icon: Icon(Icons.logout)),
             CircleAvatar(
               radius: 25.r,
               backgroundColor: Colors.blueAccent,
-        
+
               foregroundImage: user?.photoURL != null
                   ? NetworkImage(user!.photoURL!)
                   : null,
-            
+
               child: const Icon(Icons.person, color: Colors.white, size: 30),
             ),
             const SizedBox(width: 15),
@@ -75,7 +73,14 @@ class HomeScreen extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: dynamicPadding),
             child: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SettingsScreen(),
+                  ),
+                );
+              },
               icon: const Icon(Icons.settings, color: Colors.blueAccent),
             ),
           ),
@@ -97,14 +102,18 @@ class HomeScreen extends StatelessWidget {
                 return const EmptyList();
               }
 
-              return ListView.separated(
-                physics: const BouncingScrollPhysics(),
+              return ReorderableListView.builder(
                 itemBuilder: (context, index) {
-                  return HabitCard(habit: habits[index]);
+                  return Padding(
+                    key: ValueKey(habits[index].id),
+                    padding: EdgeInsets.only(bottom: 15.h),
+                    child: HabitCard(habit: habits[index]),
+                  );
                 },
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: 15),
                 itemCount: habits.length,
+                onReorder: (oldIndex, newIndex) {
+                  context.read<HabitCubit>().reorderHabits(oldIndex, newIndex);
+                },
               );
             }
 
@@ -112,15 +121,22 @@ class HomeScreen extends StatelessWidget {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const AddHabitScreen()),
-          );
-        },
-        backgroundColor: Colors.blueAccent,
-        child: const Icon(Icons.add),
+      floatingActionButton: Builder(
+        builder: (context) => FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => BlocProvider.value(
+                  value: habitCubit,
+                  child: const AddHabitScreen(),
+                ),
+              ),
+            );
+          },
+          backgroundColor: Colors.blueAccent,
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }
