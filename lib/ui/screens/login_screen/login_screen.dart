@@ -1,9 +1,9 @@
-import 'dart:ui';
 import 'package:badhabit_tracker/logic/cubits/auth_cubit.dart';
 import 'package:badhabit_tracker/ui/screens/signIn_screen/signIn_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -98,13 +98,8 @@ class _LoginScreenState extends State<LoginScreen>
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 30.w),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(height: 10.h),
-                    SizedBox(
-                      width: 150.w,
-                      child: Image.asset('lib/assets/icons/logo.png'),
-                    ),
-                    SizedBox(height: 5.h),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -138,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen>
                       ],
                     ),
 
-                    const Spacer(flex: 1),
+                    SizedBox(height: 40.h),
 
                     // Typing Animasyonu: Welcome
                     AnimatedBuilder(
@@ -159,9 +154,8 @@ class _LoginScreenState extends State<LoginScreen>
                       },
                     ),
 
-                    SizedBox(height: 20.h),
+                    SizedBox(height: 10.h),
 
-                    // Typing Animasyonu: Subtitle
                     AnimatedBuilder(
                       animation: _subTitleAnimation,
                       builder: (context, child) {
@@ -180,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen>
                       },
                     ),
 
-                    const Spacer(flex: 2),
+                    SizedBox(height: 50.h),
 
                     // Aksiyon Butonları
                     SizedBox(
@@ -228,7 +222,7 @@ class _LoginScreenState extends State<LoginScreen>
                       ),
                     ),
 
-                    const Spacer(flex: 1),
+                    SizedBox(height: 30.h),
 
                     Text(
                       'Sign in with:',
@@ -236,7 +230,7 @@ class _LoginScreenState extends State<LoginScreen>
                     ),
                     SizedBox(height: 15.h),
 
-                    // Sosyal İkonlar
+                    // Sosyal İkonlar (FontAwesomeIcons olarak güncellendi)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -244,18 +238,20 @@ class _LoginScreenState extends State<LoginScreen>
                           onPressed: () {
                             context.read<AuthCubit>().signInWithGoogle();
                           },
-                          icon: Icon(
-                            Icons.facebook,
+                          icon: FaIcon(
+                            FontAwesomeIcons.google,
                             color: Colors.white,
-                            size: 32.sp,
+                            size: 25.sp,
                           ),
                         ),
                         SizedBox(width: 30.w),
-                        Icon(Icons.facebook, color: Colors.white, size: 32.sp),
+                        FaIcon(
+                          FontAwesomeIcons.facebook,
+                          color: Colors.white,
+                          size: 25.sp,
+                        ),
                       ],
                     ),
-
-                    SizedBox(height: 30.h),
                   ],
                 ),
               ),
