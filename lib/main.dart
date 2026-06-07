@@ -1,5 +1,6 @@
 import 'package:badhabit_tracker/firebase_options.dart';
 import 'package:badhabit_tracker/logic/cubits/auth_cubit.dart';
+import 'package:badhabit_tracker/logic/cubits/theme_cubit.dart';
 import 'package:badhabit_tracker/ui/screens/login_screen/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'ui/screens/home_screen/home_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import './core/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,46 +41,47 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return RepositoryProvider.value(
       value: habitRepository,
-      child: BlocProvider(
-        create: (context) => AuthCubit(habitRepository),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => AuthCubit(habitRepository)),
+          BlocProvider(
+            create: (context) => ThemeCubit(isar: habitRepository.isar),
+          ),
+        ],
         child: ScreenUtilInit(
           designSize: const Size(360, 690),
           minTextAdapt: true,
           builder: (context, child) {
-            return BlocBuilder<AuthCubit, User?>(
-              builder: (context, user) {
-                if (user != null) {
-                  return BlocProvider(
-                    key: ValueKey(user.uid),
-                    create: (context) =>
-                        HabitCubit(habitRepository, userId: user.uid),
-                    child: MaterialApp(
-                      debugShowCheckedModeBanner: false,
-                      title: 'BadHabit tracker',
-                      theme: ThemeData(
-                        useMaterial3: true,
-                        colorScheme: ColorScheme.fromSeed(
-                          seedColor: Colors.deepPurple,
-                          brightness: Brightness.dark,
+            return BlocBuilder<ThemeCubit, ThemeMode>(
+              builder: (context, themeMode) {
+                return BlocBuilder<AuthCubit, User?>(
+                  builder: (context, user) {
+                    if (user != null) {
+                      return BlocProvider(
+                        key: ValueKey(user.uid),
+                        create: (context) =>
+                            HabitCubit(habitRepository, userId: user.uid),
+                        child: MaterialApp(
+                          debugShowCheckedModeBanner: false,
+                          title: 'BadHabit tracker',
+                          themeMode: themeMode,
+                          darkTheme: AppTheme.darkTheme,
+                          theme: AppTheme.lightTheme,
+                          home: const HomeScreen(),
                         ),
-                      ),
-                      home: const HomeScreen(),
-                    ),
-                  );
-                } else {
-                  return MaterialApp(
-                    debugShowCheckedModeBanner: false,
-                    title: 'BadHabit tracker',
-                    theme: ThemeData(
-                      useMaterial3: true,
-                      colorScheme: ColorScheme.fromSeed(
-                        seedColor: Colors.deepPurple,
-                        brightness: Brightness.dark,
-                      ),
-                    ),
-                    home: const LoginScreen(),
-                  );
-                }
+                      );
+                    } else {
+                      return MaterialApp(
+                        debugShowCheckedModeBanner: false,
+                        title: 'Habit Hero',
+                        themeMode: themeMode,
+                        theme: AppTheme.lightTheme,
+                        darkTheme: AppTheme.darkTheme,
+                        home: const LoginScreen(),
+                      );
+                    }
+                  },
+                );
               },
             );
           },
