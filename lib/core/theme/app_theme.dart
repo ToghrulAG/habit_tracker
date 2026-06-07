@@ -8,9 +8,15 @@ class AppTheme {
     scaffoldBackgroundColor: AppColors.lightBackground,
     colorScheme: const ColorScheme.light(
       primary: AppColors.primary,
-      surface: AppColors.darkSurface,
-      onSurface: AppColors.textLight,
+      surface: AppColors.lightSurface,
+      onSurface: AppColors.textDark,
     ),
+    textTheme: const TextTheme(
+      bodyLarge: TextStyle(color: AppColors.textDark),
+      bodyMedium: TextStyle(color: AppColors.textDark),
+      titleLarge: TextStyle(color: AppColors.textDark),
+    ),
+    
   );
 
   static final ThemeData darkTheme = ThemeData(
@@ -21,6 +27,14 @@ class AppTheme {
       primary: AppColors.primary,
       surface: AppColors.darkSurface,
       onSurface: AppColors.textLight,
+    ),
+    cardTheme: const CardThemeData(
+      color: AppColors.darkSurface,
+    ),
+     textTheme: const TextTheme(
+      bodyLarge: TextStyle(color: AppColors.textLight),
+      bodyMedium: TextStyle(color: AppColors.textLight),
+      titleLarge: TextStyle(color: AppColors.textLight),
     ),
   );
 }
