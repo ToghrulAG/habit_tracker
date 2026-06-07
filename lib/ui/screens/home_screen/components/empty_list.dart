@@ -18,8 +18,8 @@ class EmptyList extends StatelessWidget {
             SizedBox(height: 10,),
             Text(
               textAlign: TextAlign.center,
-              'Poka chto tshina brat \n', 
-              style: TextStyle(fontSize: 18, color: const Color.fromARGB(204, 255, 255, 255), fontWeight: FontWeight.bold),
+              "You haven't added anything yet.\n", 
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
 
           ],

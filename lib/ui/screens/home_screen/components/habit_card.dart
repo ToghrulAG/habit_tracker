@@ -10,6 +10,9 @@ class HabitCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final themeColors = Theme.of(context).colorScheme;
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: InkWell(
@@ -23,10 +26,7 @@ class HabitCard extends StatelessWidget {
         },
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-          decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 40, 40, 40),
-            borderRadius: BorderRadius.circular(30),
-          ),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: themeColors.surface),
           child: Row(
             children: [
               SvgPicture.asset(habit.icon, width: 50.w, height: 50.h),
@@ -58,7 +58,7 @@ class HabitCard extends StatelessWidget {
                               'Current Goal',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.white,
+                             
                               ),
                             ),
                             SizedBox(height: 5),
@@ -77,14 +77,14 @@ class HabitCard extends StatelessWidget {
                             ),
                           ],
                         ),
-                        Column( 
+                        Column(
                           children: [
                             SizedBox(height: 5),
                             Text(
                               'Attempt',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.white,
+                             
                               ),
                             ),
                             SizedBox(height: 5),
@@ -104,7 +104,7 @@ class HabitCard extends StatelessWidget {
                               'Record',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.white,
+                               
                               ),
                             ),
                             SizedBox(height: 5),

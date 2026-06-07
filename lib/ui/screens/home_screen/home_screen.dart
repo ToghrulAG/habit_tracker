@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../logic/cubits/habit_cubit.dart';
-import '../../../logic/cubits/habit_state.dart';
+import '../../../logic/states/habit_state.dart';
 import 'components/habit_card.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -19,7 +19,7 @@ class HomeScreen extends StatelessWidget {
     double dynamicPadding = screenWidth * 0.05;
 
     final user = context.watch<AuthCubit>().state;
-    final habitCubit = context.read<HabitCubit>(); 
+    final habitCubit = context.read<HabitCubit>();
 
     return Scaffold(
       appBar: AppBar(
@@ -32,13 +32,11 @@ class HomeScreen extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 25.r,
-              backgroundColor: Colors.blueAccent,
-
               foregroundImage: user?.photoURL != null
                   ? NetworkImage(user!.photoURL!)
                   : null,
 
-              child: const Icon(Icons.person, color: Colors.white, size: 30),
+              child: const Icon(Icons.person, size: 30),
             ),
             const SizedBox(width: 15),
             Expanded(
@@ -51,7 +49,6 @@ class HomeScreen extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
                     ),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,

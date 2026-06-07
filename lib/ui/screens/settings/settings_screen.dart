@@ -30,7 +30,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: Column(
               children: [
                 Card(
-                  color: const Color.fromARGB(255, 33, 33, 33),
+                
                   child: ListTile(
                     leading: CircleAvatar(
                       radius: 20.r,
@@ -57,13 +57,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 SizedBox(height: 3.h),
                 Card(
-                  color: const Color.fromARGB(255, 33, 33, 33),
+                
                   child: Column(
                     children: [
                       ListTile(
                         title: Text(
                           'Change Password',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                         
                         ),
                         subtitle: Text(
                           'Update and strengthen account security',
@@ -73,7 +73,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ListTile(
                         title: Text(
                           'Terms of use',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                         
                         ),
                         subtitle: Text(
                           'Update and strengthen account security',
@@ -84,7 +84,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         secondary: Icon(Icons.notifications),
                         title: Text(
                           'Push Notifications',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                    
                         ),
                         subtitle: Text(
                           'Customize your notification preferences',
@@ -101,6 +101,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           final isDarkMode = themeMode == ThemeMode.dark;
 
                           return SwitchListTile(
+                            title: Text('Dark Theme mode'),
+                            secondary: Icon(Icons.dark_mode),
                             value: isDarkMode,
                             onChanged: (bool newValue) {
                               context.read<ThemeCubit>().changeTheme(newValue);
