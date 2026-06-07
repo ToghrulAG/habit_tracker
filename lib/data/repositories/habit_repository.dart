@@ -1,19 +1,12 @@
+import 'package:badhabit_tracker/data/models/settings_model.dart';
 import 'package:path_provider/path_provider.dart';
 import '../models/habit_model.dart';
 import 'package:isar/isar.dart';
 
 class HabitRepository {
-  Isar? _isar; // Sadece bir degisken Isar in kendisini _isar icine aliyoruz
-
-  Future<Isar> get isar async {
-    // Basit bit getter, _isar degiskenin veri tabanina olan erisimini kontrol eder
-    if (_isar != null) return _isar!;
-    // Eger null degilse o zaman kesin null degil diye return veriyoruz
-    await init();
-    // Bu sart ise yaramazsa, init metoduna geciyoruz
-    return _isar!;
-    // Init bittikten sonra null olmayan _isar i geri veriyoruz
-  }
+  Isar? _isar;
+  
+  Isar get isar => _isar!; // Sadece bir degisken Isar in kendisini _isar icine aliyoruz
 
   Future<void> init() async {
     final dir = await getApplicationDocumentsDirectory(); // Init metodumuz
@@ -27,7 +20,7 @@ class HabitRepository {
       } else {
         // bossa dbyi aciyoruz ve Habit shemasini tanimliyoruz, dir.path yazarak da onun yerini belirliyoruz
 
-        _isar = await Isar.open([HabitModelSchema], directory: dir.path);
+        _isar = await Isar.open([HabitModelSchema, SettingsModelSchema], directory: dir.path);
       }
     } catch (e) {
       throw Exception(e);
@@ -61,7 +54,7 @@ class HabitRepository {
   Future<List<HabitModel>> getAllHabits() async {
     final db = await isar;
     try {
-      return await db.habitModels.where().findAll();
+      return await db.habitModels.where().sortByPosition().findAll();
     } catch (e) {
       return [];
     }
