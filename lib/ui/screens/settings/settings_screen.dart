@@ -1,3 +1,4 @@
+import 'package:badhabit_tracker/logic/cubits/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,6 +16,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<AuthCubit>().state;
+
+    final currentTheme = context.watch<ThemeCubit>().state;
+
+    final isDarkMode = context.watch<ThemeCubit>().state == ThemeMode.dark;
 
     return Scaffold(
       appBar: AppBar(title: Text('Settings'), centerTitle: true),
@@ -91,6 +96,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           });
                         },
                       ),
+                      BlocBuilder<ThemeCubit, ThemeMode>(
+                        builder: (context, themeMode) {
+                          final isDarkMode = themeMode == ThemeMode.dark;
+
+                          return SwitchListTile(
+                            value: isDarkMode,
+                            onChanged: (bool newValue) {
+                              context.read<ThemeCubit>().changeTheme(newValue);
+                            },
+                          );
+                        },
+                      ),
+                      // SwitchListTile(value: value, onChanged: onChanged)
                       SizedBox(height: 10.h),
                       ListTile(
                         onTap: () {
